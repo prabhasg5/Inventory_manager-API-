@@ -40,9 +40,10 @@ class Database:
                 COUCHBASE_PASSWORD
             )
        
-            self.cluster = Cluster(f"couchbase://{COUCHBASE_HOST}", ClusterOptions(auth))
+            self.cluster = Cluster(COUCHBASE_HOST, ClusterOptions(auth))
             self.bucket = self.cluster.bucket(COUCHBASE_BUCKET)
             self.collection = self.bucket.collection(COUCHBASE_COLLECTION)
+            
             try:
                 query = f"SELECT COUNT(*) FROM system:indexes WHERE keyspace_id = '{COUCHBASE_BUCKET}' AND is_primary = true"
                 result = self.cluster.query(query)
