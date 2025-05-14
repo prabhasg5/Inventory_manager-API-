@@ -1,21 +1,34 @@
+FROM ubuntu:20.04
 
-FROM python:3.11-slim
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     wget \
+    gnupg \
+    lsb-release \
     libssl1.1 \
-    libcouchbase3 \
-    libcouchbase-dev \
-    gcc \
     build-essential \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Couchbase C SDK (libcouchbase)
+RUN curl -fsSL https://packages.couchbase.com/clients/c/repos/deb/couchbase.key | gpg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gpg] https://packages.couchbase.com/clients/c/repos/deb/ubuntu2004 focal focal/main" > /etc/apt/sources.list.d/couchbase.list && \
+    apt-get update && apt-get install -y libcouchbase-dev libcouchbase3
 
 WORKDIR /app
 
 COPY . .
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 EXPOSE 10000
 
