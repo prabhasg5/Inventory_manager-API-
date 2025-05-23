@@ -1,9 +1,7 @@
 FROM ubuntu:20.04
 
-# Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -18,7 +16,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Couchbase C SDK (libcouchbase)
 RUN curl -fsSL https://packages.couchbase.com/clients/c/repos/deb/couchbase.key | gpg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gpg] https://packages.couchbase.com/clients/c/repos/deb/ubuntu2004 focal focal/main" > /etc/apt/sources.list.d/couchbase.list && \
     apt-get update && apt-get install -y libcouchbase-dev libcouchbase3
